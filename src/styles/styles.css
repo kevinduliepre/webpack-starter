@@ -6,8 +6,19 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  overflow: hidden;
+}
+
 body {
   min-height: 100vh;
   font-family: "Supreme", sans-serif;
-  background-color: rebeccapurple;
+}
+
+.webgl {
+  /* position: fixed; */
+  display: block;
+  top: 0;
+  left: 0;
 }
