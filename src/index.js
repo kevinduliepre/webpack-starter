@@ -17,9 +17,18 @@ const scene = new THREE.Scene();
 // const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
 
 // Creating a custom bufferGeometry
-const positionArrays = new Float32Array([0, 0, 0, 0, 1, 0, 1, 0, 0]);
-const positionAttributes = new THREE.BufferAttribute(positionArrays, 3);
 const geometry = new THREE.BufferGeometry();
+
+const count = 500;
+const positionArrays = new Float32Array(count * 3 * 3);
+// Note: Each triangle is composed of 3 vertices and each vertex has 3 values (x, y, z)
+
+// fill the array with random value
+for (let i = 0; i < count * 3 * 3; i++) {
+  positionArrays[i] = (Math.random() - 0.5) * 1.5;
+}
+
+const positionAttributes = new THREE.BufferAttribute(positionArrays, 3);
 geometry.setAttribute("position", positionAttributes);
 
 const material = new THREE.MeshBasicMaterial({
@@ -45,8 +54,6 @@ scene.add(camera);
 // Controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
-// controls.target.y = 2;
-// controls.update();
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -70,11 +77,6 @@ window.addEventListener("resize", () => {
 });
 
 const tick = () => {
-  // cube.rotation.x += 0.01;
-  // cube.rotation.y += 0.01;
-
-  // camera.lookAt(mesh.position);
-
   // Update controls
   controls.update();
 
