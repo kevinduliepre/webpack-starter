@@ -2,9 +2,7 @@ import "./styles/styles.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import gsap from "gsap";
-import * as dat from "dat.gui";
-
-console.log(gsap);
+import GUI from "lil-gui";
 
 // Variables
 const sizes = {
@@ -13,10 +11,10 @@ const sizes = {
 };
 
 // Debug
-const gui = new dat.GUI();
+const gui = new GUI();
 
 const parameters = {
-  color: 0x0000ff,
+  color: 0x00ffff,
   spin: () => {
     gsap.to(mesh.rotation, {
       duration: 1,
@@ -92,11 +90,24 @@ const tick = () => {
 tick();
 
 // Debug
-gui.add(mesh.position, "y").min(-3).max(3).step(0.01).name("elevation");
+gui.add(mesh.position, "y").min(-3).max(3).step(0.01).name("Cube Elevation Y");
 gui.add(material, "wireframe");
-
 gui.addColor(parameters, "color").onChange(() => {
   material.color.set(parameters.color);
 });
 
 gui.add(parameters, "spin");
+
+gui
+  .add(camera.position, "x")
+  .min(-5)
+  .max(5)
+  .step(0.01)
+  .name("Camera position X");
+
+gui
+  .add(camera.position, "y")
+  .min(-5)
+  .max(5)
+  .step(0.01)
+  .name("Camera position Y");
