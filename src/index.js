@@ -4,7 +4,11 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import gsap from "gsap";
 import GUI from "lil-gui";
 
+import imageSrc from "../static/textures/minecraft.png";
+
 // Variables
+const canvas = document.querySelector(".webgl");
+
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
@@ -12,34 +16,60 @@ const sizes = {
 
 // Debug
 const gui = new GUI();
+gui.close();
 
 const parameters = {
   color: 0x00ffff,
   spin: () => {
-    gsap.to(mesh.rotation, {
+    gsap.to(cubeMesh.rotation, {
       duration: 1,
-      y: mesh.rotation.y + Math.PI * 2,
-      x: mesh.rotation.x + Math.PI * 2,
+      y: cubeMesh.rotation.y + Math.PI * 2,
+      x: cubeMesh.rotation.x + Math.PI * 2,
     });
   },
 };
 
-const canvas = document.querySelector(".webgl");
+// Loading the Texture
+const loadingManager = new THREE.LoadingManager();
+
+// loadingManager.onStart = () => {
+//   console.log("onStart");
+// };
+
+// loadingManager.onLoad = () => {
+//   console.log("onLoad");
+// };
+
+// loadingManager.onProgress = () => {
+//   console.log("onProgress");
+// };
+
+// loadingManager.onError = () => {
+//   console.log("onError");
+// };
+
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const colorTexture = textureLoader.load(imageSrc);
 
 // Creating a scene
 const scene = new THREE.Scene();
 
 // Creating the geometry and material
-const geometry = new THREE.BoxGeometry(1, 1, 1);
+const cube = new THREE.BoxGeometry(1, 1, 1);
 
-const material = new THREE.MeshBasicMaterial({
-  color: parameters.color,
+const cubeMaterial = new THREE.MeshBasicMaterial({
+  // color: parameters.color,
+  map: colorTexture,
 });
 
-// Creating the cube
-const mesh = new THREE.Mesh(geometry, material);
+colorTexture.generateMipmaps = false;
+// colorTexture.minFilter = THREE.NearestFilter;
+colorTexture.magFilter = THREE.NearestFilter;
 
-scene.add(mesh);
+// Creating the cube
+const cubeMesh = new THREE.Mesh(cube, cubeMaterial);
+
+scene.add(cubeMesh);
 
 // Creating camera
 const camera = new THREE.PerspectiveCamera(
@@ -50,7 +80,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.position.z = 3;
-camera.lookAt(mesh.position);
+camera.lookAt(cubeMesh.position);
 scene.add(camera);
 
 // Controls
@@ -90,10 +120,15 @@ const tick = () => {
 tick();
 
 // Debug
-gui.add(mesh.position, "y").min(-3).max(3).step(0.01).name("Cube Elevation Y");
-gui.add(material, "wireframe");
+gui
+  .add(cubeMesh.position, "y")
+  .min(-3)
+  .max(3)
+  .step(0.01)
+  .name("Cube Elevation Y");
+gui.add(cubeMaterial, "wireframe");
 gui.addColor(parameters, "color").onChange(() => {
-  material.color.set(parameters.color);
+  cubeMaterial.color.set(parameters.color);
 });
 
 gui.add(parameters, "spin");
